@@ -4,25 +4,24 @@ package restapi
 
 import (
 	"crypto/tls"
-	"jobTask/models"
 	"net/http"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
+	"jobTask/models"
 	"jobTask/restapi/operations"
 	"jobTask/restapi/operations/petitions"
 )
 
-//go:generate swagger generate server --target ..\..\jobTask --name PetitionManager --spec ..\swagger.yaml --principal interface{}
-
-var APIToken = "123"
+//go:generate swagger generate server --target ..\..\jobTask --name PetitionManager --spec ..\openAPI\swagger.yaml --template-dir .\templates --principal models.Principal
 
 func configureFlags(api *operations.PetitionManagerAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
-
 }
+
+var token = "123"
 
 func configureAPI(api *operations.PetitionManagerAPI) http.Handler {
 	// configure the api here
@@ -42,15 +41,27 @@ func configureAPI(api *operations.PetitionManagerAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	// Applies when the "token" query is set
+
 	api.PathTokenAuth = func(token string) (*models.Principal, error) {
-		if token == APIToken{
+		if token == "123" {
 			p := models.Principal(token)
-			return &p,nil
+			return &p, nil
 		}
-		return nil, errors.New(401,"token incorrect")
+		return nil, errors.New(401, "incorrect token")
 	}
 
+	// Set your custom authorizer if needed. Default one is security.Authorized()
+	// Expected interface runtime.Authorizer
+	//
+	// Example:
+	// api.APIAuthorizer = security.Authorized()
 
+	if api.PetitionsPetitionsDeleteHandler == nil {
+		api.PetitionsPetitionsDeleteHandler = petitions.PetitionsDeleteHandlerFunc(func(params petitions.PetitionsDeleteParams, principal *models.Principal) middleware.Responder {
+			return middleware.NotImplemented("operation petitions.PetitionsDelete has not yet been implemented")
+		})
+	}
 	if api.PetitionsPetitionsGetHandler == nil {
 		api.PetitionsPetitionsGetHandler = petitions.PetitionsGetHandlerFunc(func(params petitions.PetitionsGetParams, principal *models.Principal) middleware.Responder {
 			return middleware.NotImplemented("operation petitions.PetitionsGet has not yet been implemented")
@@ -64,6 +75,11 @@ func configureAPI(api *operations.PetitionManagerAPI) http.Handler {
 	if api.PetitionsPetitionsPostHandler == nil {
 		api.PetitionsPetitionsPostHandler = petitions.PetitionsPostHandlerFunc(func(params petitions.PetitionsPostParams, principal *models.Principal) middleware.Responder {
 			return middleware.NotImplemented("operation petitions.PetitionsPost has not yet been implemented")
+		})
+	}
+	if api.PetitionsPetitionsUpdateHandler == nil {
+		api.PetitionsPetitionsUpdateHandler = petitions.PetitionsUpdateHandlerFunc(func(params petitions.PetitionsUpdateParams, principal *models.Principal) middleware.Responder {
+			return middleware.NotImplemented("operation petitions.PetitionsUpdate has not yet been implemented")
 		})
 	}
 
@@ -89,7 +105,6 @@ func configureServer(s *http.Server, scheme, addr string) {
 // The middleware configuration is for the handler executors. These do not apply to the swagger.json document.
 // The middleware executes after routing but before authentication, binding and validation.
 func setupMiddlewares(handler http.Handler) http.Handler {
-
 	return handler
 }
 

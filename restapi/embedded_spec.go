@@ -180,6 +180,11 @@ func init() {
     {
       "PathToken": []
     }
+  ],
+  "tags": [
+    {
+      "name": "petitions"
+    }
   ]
 }`))
 	FlatSwaggerJSON = json.RawMessage([]byte(`{
@@ -344,6 +349,11 @@ func init() {
   "security": [
     {
       "PathToken": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "petitions"
     }
   ]
 }`))

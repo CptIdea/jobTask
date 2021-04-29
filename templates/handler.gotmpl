@@ -1,0 +1,11 @@
+package app
+
+import (
+	api{{ pascalize .Package }} "{{.GenCommon.TargetImportPath}}/{{ .RootPackage }}/operations/{{ .Package }}"
+	models "{{.GenCommon.TargetImportPath}}/models"
+	"github.com/go-openapi/runtime/middleware"
+)
+
+func (srv *Service){{ pascalize .Name }}Handler(params api{{ pascalize .Package }}.{{ pascalize .Name }}Params, principal *models.Principal) middleware.Responder {
+	return middleware.NotImplemented("operation {{ .Package }} {{ pascalize .Name }} has not yet been implemented")
+}

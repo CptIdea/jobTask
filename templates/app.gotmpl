@@ -1,0 +1,16 @@
+package app
+
+import "fmt"
+
+type Service struct {
+}
+
+func New() (*Service,error) {
+    return &Service{},nil
+}
+
+func (srv *Service) OnShutdown() {}
+
+func (srv *Service) AutoMigrate() error {
+    return fmt.Errorf("automigrate has not yet been implemented")
+}
