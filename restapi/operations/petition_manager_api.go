@@ -61,9 +61,9 @@ func NewPetitionManagerAPI(spec *loads.Document) *PetitionManagerAPI {
 			return middleware.NotImplemented("operation petitions.PetitionsUpdate has not yet been implemented")
 		}),
 
-		// Applies when the "token" query is set
-		PathTokenAuth: func(token string) (*models.Principal, error) {
-			return nil, errors.NotImplemented("api key auth (PathToken) token from query param [token] has not yet been implemented")
+		// Applies when the "token" header is set
+		HeaderTokenAuth: func(token string) (*models.Principal, error) {
+			return nil, errors.NotImplemented("api key auth (HeaderToken) token from header param [token] has not yet been implemented")
 		},
 		// default authorizer is authorized meaning no requests are blocked
 		APIAuthorizer: security.Authorized(),
@@ -103,9 +103,9 @@ type PetitionManagerAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
-	// PathTokenAuth registers a function that takes a token and returns a principal
-	// it performs authentication based on an api key token provided in the query
-	PathTokenAuth func(string) (*models.Principal, error)
+	// HeaderTokenAuth registers a function that takes a token and returns a principal
+	// it performs authentication based on an api key token provided in the header
+	HeaderTokenAuth func(string) (*models.Principal, error)
 
 	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
 	APIAuthorizer runtime.Authorizer
@@ -197,7 +197,7 @@ func (o *PetitionManagerAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
-	if o.PathTokenAuth == nil {
+	if o.HeaderTokenAuth == nil {
 		unregistered = append(unregistered, "TokenAuth")
 	}
 
@@ -234,10 +234,10 @@ func (o *PetitionManagerAPI) AuthenticatorsFor(schemes map[string]spec.SecurityS
 	result := make(map[string]runtime.Authenticator)
 	for name := range schemes {
 		switch name {
-		case "PathToken":
+		case "HeaderToken":
 			scheme := schemes[name]
 			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, func(token string) (interface{}, error) {
-				return o.PathTokenAuth(token)
+				return o.HeaderTokenAuth(token)
 			})
 
 		}

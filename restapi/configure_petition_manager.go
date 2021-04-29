@@ -4,6 +4,7 @@ package restapi
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -21,7 +22,7 @@ func configureFlags(api *operations.PetitionManagerAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
-var token = "123"
+var headerToken = "123"
 
 func configureAPI(api *operations.PetitionManagerAPI) http.Handler {
 	// configure the api here
@@ -41,14 +42,14 @@ func configureAPI(api *operations.PetitionManagerAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	// Applies when the "token" query is set
+	// Applies when the "token" header is set
 
-	api.PathTokenAuth = func(token string) (*models.Principal, error) {
-		if token == "123" {
+	api.HeaderTokenAuth = func(token string) (*models.Principal, error) {
+		if token == headerToken {
 			p := models.Principal(token)
 			return &p, nil
 		}
-		return nil, errors.New(401, "incorrect token")
+		return nil, fmt.Errorf("authorization failed")
 	}
 
 	// Set your custom authorizer if needed. Default one is security.Authorized()

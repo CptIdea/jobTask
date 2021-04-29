@@ -10,7 +10,7 @@ layout:
       source: "asset:serverConfigureapi"
       target: "{{ joinFilePath .Target .ServerPackage }}"
       file_name: "configure_{{ .Name }}.go"
-      skip_exists: false
+      skip_exists: true
 
     - name: main
       source: main

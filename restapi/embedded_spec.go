@@ -170,15 +170,15 @@ func init() {
     }
   },
   "securityDefinitions": {
-    "PathToken": {
+    "HeaderToken": {
       "type": "apiKey",
       "name": "token",
-      "in": "query"
+      "in": "header"
     }
   },
   "security": [
     {
-      "PathToken": []
+      "HeaderToken": []
     }
   ],
   "tags": [
@@ -340,15 +340,15 @@ func init() {
     }
   },
   "securityDefinitions": {
-    "PathToken": {
+    "HeaderToken": {
       "type": "apiKey",
       "name": "token",
-      "in": "query"
+      "in": "header"
     }
   },
   "security": [
     {
-      "PathToken": []
+      "HeaderToken": []
     }
   ],
   "tags": [

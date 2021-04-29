@@ -9,13 +9,13 @@ schemes:
 host: localhost:8080
 
 securityDefinitions:
-  PathToken:
+  HeaderToken:
     type: apiKey
-    in: query
+    in: header
     name: token
 
 security:
-  - PathToken : []
+  - HeaderToken : []
 
 tags:
   - name: petitions
